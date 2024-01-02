@@ -55,7 +55,7 @@ class App extends React.Component {
     this.setState({ modalImageUrl: null });
   };
   render() {
-    const { query, images, loading, modalImageUrl } = this.state;
+    const { images, loading, modalImageUrl } = this.state;
     return (
       <div>
         <SearchBar onSubmit={this.handleSubmit} />
