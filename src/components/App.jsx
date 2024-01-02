@@ -1,61 +1,72 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Loader from './Loader/Loader';
 import Button from './Button/Button';
 import Modal from './Modal/Modal';
 
-const App = () => {
-  const [query, setQuery] = useState('');
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [modalImageUrl, setModalImageUrl] = useState(null);
-
-  const handleSubmit = newQuery => {
-    setQuery(newQuery);
-    setImages([]);
-    setPage(1);
-    fetchData(newQuery, 1);
+class App extends React.Component {
+  state = {
+    query: '',
+    images: [],
+    page: 1,
+    loading: false,
+    modalImageUrl: null,
   };
 
-  const fetchData = async (query, pageNumber) => {
+  handleSubmit = newQuery => {
+    this.setState({
+      query: newQuery,
+      images: [],
+      page: 1,
+    });
+    this.fetchData(newQuery, 1);
+  };
+
+  fetchData = async (query, pageNumber) => {
     try {
-      setLoading(true);
+      this.setState({ loading: true });
+
       const response = await fetch(
         `https://pixabay.com/api/?q=${query}&page=${pageNumber}&key=40489521-2d233b9ce133180f8f85686cd&image_type=photo&orientation=horizontal&per_page=12`
       );
+
       const data = await response.json();
-      setImages(prevImages => [...prevImages, ...data.hits]);
-      setPage(pageNumber + 1);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...data.hits],
+        page: prevState.page + 1,
+      }));
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Помилка при отриманні даних:', error);
     } finally {
-      setLoading(false);
+      this.setState({ loading: false });
     }
   };
 
-  const loadMore = () => {
-    fetchData(query, page);
+  loadMore = () => {
+    this.fetchData(this.state.query, this.state.page);
   };
 
-  const openModal = imageUrl => {
-    setModalImageUrl(imageUrl);
+  openModal = imageUrl => {
+    this.setState({ modalImageUrl: imageUrl });
   };
 
-  const closeModal = () => {
-    setModalImageUrl(null);
+  closeModal = () => {
+    this.setState({ modalImageUrl: null });
   };
-
-  return (
-    <div>
-      <SearchBar onSubmit={handleSubmit} />
-      <ImageGallery images={images} onImageClick={openModal} />
-      {loading && <Loader />}
-      {images.length > 0 && <Button onClick={loadMore} />}
-      {modalImageUrl && <Modal imageUrl={modalImageUrl} onClose={closeModal} />}
-    </div>
-  );
-};
-
+  render() {
+    const { query, images, loading, modalImageUrl } = this.state;
+    return (
+      <div>
+        <SearchBar onSubmit={this.handleSubmit} />
+        <ImageGallery images={images} onImageClick={this.openModal} />
+        {loading && <Loader />}
+        {images.length > 0 && <Button onClick={this.loadMore} />}
+        {modalImageUrl && (
+          <Modal imageUrl={modalImageUrl} onClose={this.closeModal} />
+        )}
+      </div>
+    );
+  }
+}
 export default App;
