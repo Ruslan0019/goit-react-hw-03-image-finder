@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Loader from './Loader/Loader';
 import Button from './Button/Button';
 import Modal from './Modal/Modal';
 
-class App extends React.Component {
+class App extends Component {
   state = {
     query: '',
     images: [],
@@ -37,7 +37,7 @@ class App extends React.Component {
         page: prevState.page + 1,
       }));
     } catch (error) {
-      console.error('Помилка при отриманні даних:', error);
+      console.error('Error while receiving data:', error);
     } finally {
       this.setState({ loading: false });
     }
