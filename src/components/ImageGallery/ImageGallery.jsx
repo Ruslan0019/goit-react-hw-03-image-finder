@@ -1,26 +1,15 @@
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import React from 'react';
-import styled from 'styled-components';
+import { List } from './ImageGallery.style';
 
 const ImageGallery = ({ images, onImageClick }) => {
   return (
-    <Ul className="gallery">
+    <List className="gallery">
       {images.map(image => (
         <ImageGalleryItem key={image.id} image={image} onClick={onImageClick} />
       ))}
-    </Ul>
+    </List>
   );
 };
-const Ul = styled.ul`
-  display: grid;
-  max-width: calc(100vw - 48px);
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  grid-gap: 16px;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 0;
-  list-style: none;
-  margin-left: auto;
-  margin-right: auto;
-`;
+
 export default ImageGallery;

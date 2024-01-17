@@ -1,17 +1,14 @@
 import React from 'react';
-import styled from 'styled-components';
+
 import { ThreeDots } from 'react-loader-spinner';
+import { Container } from './Loader.style';
 
 const Loader = () => {
   return (
-    <Div>
+    <Container>
       <ThreeDots color="#1d2bac" height={80} width={80} />
-    </Div>
+    </Container>
   );
 };
-const Div = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+
 export default Loader;
