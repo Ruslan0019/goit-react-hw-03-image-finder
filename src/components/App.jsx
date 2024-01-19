@@ -29,17 +29,20 @@ class App extends Component {
   }
 
   handleSubmit = newQuery => {
-    this.setState(
-      {
-        query: newQuery,
-        images: [],
-        page: 1,
-        loading: true,
-      },
-      () => {
-        this.fetchData(newQuery, 1);
-      }
-    );
+    const trimmedQuery = newQuery.trim();
+    if (trimmedQuery !== '') {
+      this.setState(
+        {
+          query: trimmedQuery,
+          images: [],
+          page: 1,
+          loading: true,
+        },
+        () => {
+          this.fetchData(trimmedQuery, 1);
+        }
+      );
+    }
   };
 
   fetchData = async (query, pageNumber) => {
@@ -73,15 +76,19 @@ class App extends Component {
   };
 
   render() {
-    const { images, loading, modalImageUrl } = this.state;
+    const { images, loading, modalImageUrl, page } = this.state;
     const allImagesLoaded = images.length === 0 && !loading;
+    const noMoreImagesToLoad =
+      allImagesLoaded ||
+      (page > 1 && images.length % 12 !== 0) ||
+      images.length < 12;
 
     return (
       <div>
         <SearchBar onSubmit={this.handleSubmit} />
         <ImageGallery images={images} onImageClick={this.openModal} />
         {loading && <Loader />}
-        {images.length >= 12 && !allImagesLoaded && (
+        {!noMoreImagesToLoad && images.length >= 12 && (
           <Button onClick={this.loadMore} />
         )}
         {modalImageUrl && (
