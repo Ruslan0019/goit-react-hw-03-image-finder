@@ -1,38 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CiSearch } from 'react-icons/ci';
 import { Button, Form, Header, Input } from './SearchBar.style';
 
-const SearchBar = ({ onSubmit }) => {
-  const [query, setQuery] = useState('');
+class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: '',
+    };
+  }
 
-  const handleChange = e => {
-    setQuery(e.target.value);
+  handleChange = e => {
+    this.setState({ query: e.target.value });
   };
 
-  const handleSubmit = e => {
+  handleSubmit = e => {
     e.preventDefault();
-    onSubmit(query);
+    this.props.onSubmit(this.state.query);
   };
 
-  return (
-    <Header>
-      <Form onSubmit={handleSubmit}>
-        <Button type="submit">
-          <CiSearch style={{ fontSize: '30px' }} />
-        </Button>
+  render() {
+    return (
+      <Header>
+        <Form onSubmit={this.handleSubmit}>
+          <Button type="submit">
+            <CiSearch style={{ fontSize: '30px' }} />
+          </Button>
 
-        <Input
-          className="input"
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-          value={query}
-          onChange={handleChange}
-        />
-      </Form>
-    </Header>
-  );
-};
+          <Input
+            className="input"
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            value={this.state.query}
+            onChange={this.handleChange}
+          />
+        </Form>
+      </Header>
+    );
+  }
+}
 
 export default SearchBar;
