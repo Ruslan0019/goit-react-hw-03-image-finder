@@ -15,33 +15,29 @@ class App extends Component {
     modalImageUrl: null,
   };
 
-  componentDidMount() {
-    const { query } = this.state;
-    if (query.trim() !== '') {
-      this.fetchData(query, 1);
-    }
-  }
+  // componentDidMount() {
+  //   const { imageUrl } = this.props;
+  //   const img = new Image();
+  //   img.src = imageUrl;
+  //   img.onload = () => this.setState({ imageLoaded: true });
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
     if ((prevState.query !== query && page === 1) || prevState.page !== page) {
+      this.fetchData(query, page);
     }
   }
 
   handleSubmit = newQuery => {
     const trimmedQuery = newQuery.trim();
     if (trimmedQuery !== '') {
-      this.setState(
-        {
-          query: trimmedQuery,
-          images: [],
-          page: 1,
-          loading: true,
-        },
-        () => {
-          this.fetchData(trimmedQuery, 1);
-        }
-      );
+      this.setState({
+        query: trimmedQuery,
+        images: [],
+        page: 1,
+        loading: true,
+      });
     }
   };
 
@@ -51,7 +47,7 @@ class App extends Component {
 
       this.setState(prevState => ({
         images: [...prevState.images, ...data],
-        page: prevState.page + 1,
+        page: pageNumber,
         loading: false,
       }));
     } catch (error) {
@@ -61,10 +57,10 @@ class App extends Component {
   };
 
   loadMore = () => {
-    const { query, page } = this.state;
-    this.setState({ loading: true }, () => {
-      this.fetchData(query, page);
-    });
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      loading: true,
+    }));
   };
 
   openModal = imageUrl => {
@@ -77,7 +73,7 @@ class App extends Component {
 
   render() {
     const { images, loading, modalImageUrl, page } = this.state;
-    const allImagesLoaded = images.length === 0 && !loading;
+    const allImagesLoaded = !images.length && !loading;
     const noMoreImagesToLoad =
       allImagesLoaded ||
       (page > 1 && images.length % 12 !== 0) ||
