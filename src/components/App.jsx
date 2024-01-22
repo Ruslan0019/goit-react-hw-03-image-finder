@@ -36,12 +36,12 @@ class App extends Component {
         query: trimmedQuery,
         images: [],
         page: 1,
-        loading: true,
       });
     }
   };
 
   fetchData = async (query, pageNumber) => {
+    this.setState({ loading: true });
     try {
       const data = await fetchData(query, pageNumber);
 
@@ -59,7 +59,6 @@ class App extends Component {
   loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
-      loading: true,
     }));
   };
 
